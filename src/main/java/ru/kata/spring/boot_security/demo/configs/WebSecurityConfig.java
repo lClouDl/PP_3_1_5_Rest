@@ -1,49 +1,56 @@
 package ru.kata.spring.boot_security.demo.configs;
 
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+import ru.kata.spring.boot_security.demo.security.AuthProviderImp;
+
+//Конфигурационный класс, который настраивает секьюрность.
+// Имеет две зависимости:
+// 1. SuccessUserHandler - необходима для определения правильного отображения представления после аутентификации,
+// 2. AuthProviderImp - определяет процесс аутентификации
 
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private final SuccessUserHandler successUserHandler;
 
-    public WebSecurityConfig(SuccessUserHandler successUserHandler) {
+    private final AuthProviderImp authProviderImp;
+
+    public WebSecurityConfig(SuccessUserHandler successUserHandler, AuthProviderImp authProviderImp) {
         this.successUserHandler = successUserHandler;
+        this.authProviderImp = authProviderImp;
     }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+
+//Настройка обработки запросов:
+// адрес: "/users/account" доступен пользователям с правами USER и ADMIN
+// адреса: "/", "/auth/registration", "/error" доступны незарегестрированным пользователям
+// остальные адреса доступны только пользователям с правами ADMIN
+// далее идет настройка определения представления после аутентификации и авторизации
+//и в конце настройка адресса выхода(logout)
+
         http
                 .authorizeRequests()
-                .antMatchers("/", "/index").permitAll()
-                .anyRequest().authenticated()
+                .antMatchers("/users/account").hasAnyRole("USER", "ADMIN")
+                .antMatchers("/", "/auth/registration", "/error").permitAll()
+                .anyRequest().hasRole("ADMIN")
                 .and()
                 .formLogin().successHandler(successUserHandler)
                 .permitAll()
                 .and()
-                .logout()
+                .logout().logoutSuccessUrl("/")
                 .permitAll();
     }
 
-    // аутентификация inMemory
-    @Bean
-    @Override
-    public UserDetailsService userDetailsService() {
-        UserDetails user =
-                User.withDefaultPasswordEncoder()
-                        .username("user")
-                        .password("user")
-                        .roles("USER")
-                        .build();
+//В этом методе настраивается процесс аутентификации. В данном случае с помощью провайдера (authenticationProvider())
 
-        return new InMemoryUserDetailsManager(user);
+    protected void configure(AuthenticationManagerBuilder auth) {
+        auth.authenticationProvider(authProviderImp);
     }
+
 }
