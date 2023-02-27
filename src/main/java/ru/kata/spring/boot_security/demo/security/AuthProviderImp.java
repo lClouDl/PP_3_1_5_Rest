@@ -8,10 +8,12 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import ru.kata.spring.boot_security.demo.servises.UserService;
 
-//В этом классе я настроил провайдер аутентификации. Использует две зависимости: userService и passwordEncoder
-
+/**В этом классе я настроил провайдер аутентификации.
+ * Использует две зависимости: userService и passwordEncoder
+ */
 @Component
 public class AuthProviderImp implements AuthenticationProvider {
 
@@ -23,11 +25,15 @@ public class AuthProviderImp implements AuthenticationProvider {
         this.passwordEncoder = passwordEncoder;
     }
 
-//Метод настройки аутентификации. Из объекта Authentication (объект, который производит вход на сайт) получает логин.
-//Далее, с помощью этого логина, ищет объект в базе данных. После достает пароль в зашифрованном виде из базы.
-//Сравнивает полученный из бд пароль и только что введенный. Если не сходится - возвращает ошибку, иначе же
-//создает токен аутентификации.
+    /**Метод настройки аутентификации. Из объекта Authentication (объект, который производит вход на сайт) получает логин.
+     * Далее, с помощью этого логина, ищет объект в базе данных. После достает пароль в зашифрованном виде из базы.
+     * Сравнивает полученный из бд пароль и только что введенный. Если не сходится - возвращает ошибку, иначе же
+     * создает токен аутентификации.
+     * Аннотация @Transactional(readOnly = true)
+     * необходима для автоматической обработки транзакции и для нормальной работы ленивой загрузки сущностей
+     */
     @Override
+    @Transactional(readOnly = true)
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         String name = authentication.getName();
         UserDetails userDetails = userService.loadUserByUsername(name);

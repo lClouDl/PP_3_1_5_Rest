@@ -6,8 +6,8 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.kata.spring.boot_security.demo.dao.UserDAO;
 import ru.kata.spring.boot_security.demo.models.User;
 
-//Класс-сервис необходимый для регистрации новых пользователей.
-
+/**Класс-сервис необходимый для регистрации новых пользователей.
+ */
 @Service
 public class RegistrationService {
 
@@ -19,8 +19,9 @@ public class RegistrationService {
         this.passwordEncoder = passwordEncoder;
     }
 
-//Метод регистрации нового пользователя. Помимо метода addUser(),
-//так же выполняет кодирование пароля с помощью passwordEncoder
+    /**Метод регистрации нового пользователя. Помимо метода addUser(),
+     * так же выполняет кодирование пароля с помощью passwordEncoder
+     */
     @Transactional
     public void register(User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));

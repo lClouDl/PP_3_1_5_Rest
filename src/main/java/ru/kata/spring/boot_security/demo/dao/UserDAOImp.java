@@ -9,9 +9,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 
-//Класс DAO слоя. Работает через EntityManager. С предыдущей задачи добавил только два метода
-//setAdminRole(User user) и removeAdminRole(User user)
-
+/**Класс DAO слоя. Работает через EntityManager. С предыдущей задачи добавил только два метода
+ * setAdminRole(User user) и removeAdminRole(User user)
+ */
 @Repository
 public class UserDAOImp implements UserDAO {
 
@@ -54,14 +54,16 @@ public class UserDAOImp implements UserDAO {
         entityManager.remove(entityManager.find(User.class, id));
     }
 
-//Метод, который берет Роль администратора из бд и добавляет ее
-//в поле множество roleSet.
+    /**Метод, который берет Роль администратора из бд и добавляет ее
+     * в поле множество roleSet.
+     */
     @Override
     public void setAdminRole(User user) {
         user.getRoleSet().add(entityManager.find(Role.class, 2));
     }
 
-//Метод, который удаляет Роль администратора из множества roleSet.
+    /**Метод, который удаляет Роль администратора из множества roleSet.
+     */
     @Override
     public void removeAdminRole(User user) {
         user.getRoleSet().remove(entityManager.find(Role.class,2));

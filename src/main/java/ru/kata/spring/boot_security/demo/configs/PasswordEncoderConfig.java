@@ -5,8 +5,10 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-//Класс конфигурации. Настраивает создание бина кодировщика пароля.
-// Создан, чтобы избежать зацикливания зависимости.
+/**
+ * Класс конфигурации. Настраивает создание бина кодировщика пароля.
+ * Создан, чтобы избежать зацикливания зависимости.
+ */
 
 @Configuration
 public class PasswordEncoderConfig {

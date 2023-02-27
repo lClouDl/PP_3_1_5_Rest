@@ -11,9 +11,9 @@ import ru.kata.spring.boot_security.demo.models.User;
 import java.util.List;
 import java.util.Optional;
 
-//Класс-сервис. Осуществляет основные CRUD операции. Реализует интерфейс UserService, к которому добавил наследование
-//от UserDetailsService. С предыдущей задачи, добавилось три метода.
-
+/**Класс-сервис. Осуществляет основные CRUD операции. Реализует интерфейс UserService, к которому добавил наследование
+ * от UserDetailsService. С предыдущей задачи, добавилось три метода.
+ */
 @Service
 @Transactional(readOnly = true)
 public class UserServiceImp implements UserService {
@@ -56,22 +56,25 @@ public class UserServiceImp implements UserService {
         userDAO.delete(id);
     }
 
-    //Метод добавления прав администратора
+    /**Метод добавления прав администратора
+     */
     @Override
     @Transactional
     public void setAdminRole(User user) {
         userDAO.setAdminRole(user);
     }
 
-    //Метод лишения прав администратора
+    /**Метод лишения прав администратора
+     */
     @Override
     @Transactional
     public void removeAdminRole(User user) {
         userDAO.removeAdminRole(user);
     }
 
-//Метод, который переопределен из интерфейса UserDetailsService. Осуществляет проверку,
-//имеется ли пользователь с таким логинов, в базе данных
+    /**Метод, который переопределен из интерфейса UserDetailsService. Осуществляет проверку,
+     * имеется ли пользователь с таким логинов, в базе данных
+     */
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Optional<User> user = userDAO.findByUserName(username);

@@ -11,20 +11,19 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Set;
 
-//Этот класс служит для настройки вывода необходимого представления после регистрации,
-//с учетом прав доступа пользователя.
-
+/**Этот класс служит для настройки вывода необходимого представления после регистрации,
+ * с учетом прав доступа пользователя.
+ */
 @Component
 public class SuccessUserHandler implements AuthenticationSuccessHandler {
 
+    /**Если роль аутентифицированного пользователя соответствует "ROLE_ADMIN", значит у этого пользователя
+     * права администратора, и его следует переадресовать на адрес /admin, в противном случае нужно вывести
+     * адресс /user/account которая отобразит информацию о пользователе.
+     */
     @Override
     public void onAuthenticationSuccess(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Authentication authentication) throws IOException {
         Set<String> roles = AuthorityUtils.authorityListToSet(authentication.getAuthorities());
-
-//Если роль аутентифицированного пользователя соответствует "ROLE_ADMIN",
-//значит у этого пользователя права администратора, и его следует переадресовать на адрес /admin,
-//в противном случае нужно вывести адресс /user/account которая отобразит информацию о пользователе.
-
         if (roles.contains("ROLE_ADMIN")) {
             httpServletResponse.sendRedirect("/admin");
         } else {

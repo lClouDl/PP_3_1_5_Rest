@@ -4,9 +4,9 @@ import org.springframework.security.core.GrantedAuthority;
 import javax.persistence.*;
 import java.util.Set;
 
-//Класс-сущность. Хранит в бд роли, необходимые для авторизации. На данном этапе их две USER и ADMIN
-//Реализует интерфейс GrantedAuthority
-
+/**Класс-сущность. Хранит в бд роли, необходимые для авторизации. На данном этапе их две USER и ADMIN
+ * Реализует интерфейс GrantedAuthority
+ */
 @Entity
 @Table(name = "roles")
 public class Role implements GrantedAuthority {
@@ -17,9 +17,10 @@ public class Role implements GrantedAuthority {
 
     private String role;
 
-//Настраил отношение многие ко многим, указал внешний ключ.
-//Для корректной работы отказался от ленивой загрузки
-    @ManyToMany(mappedBy = "roleSet", fetch = FetchType.EAGER)
+    /**Настраил отношение многие ко многим, указал внешний ключ.
+     * Для корректной работы отказался от ленивой загрузки
+     */
+    @ManyToMany(mappedBy = "roleSet")
     private Set<User> userSet;
 
     public Role(){}
@@ -56,9 +57,12 @@ public class Role implements GrantedAuthority {
                 '}';
     }
 
-    //Метод который возвращает роль.
+    /**Метод который возвращает роль.
+     */
     @Override
     public String getAuthority() {
         return getRole();
     }
 }
+
+
