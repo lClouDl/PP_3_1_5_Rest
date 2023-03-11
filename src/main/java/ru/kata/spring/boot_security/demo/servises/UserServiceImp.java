@@ -1,5 +1,6 @@
 package ru.kata.spring.boot_security.demo.servises;
 
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -56,20 +57,8 @@ public class UserServiceImp implements UserService {
         userDAO.delete(id);
     }
 
-    /**Метод добавления прав администратора
-     */
-    @Override
-    @Transactional
-    public void setAdminRole(User user) {
-        userDAO.setAdminRole(user);
-    }
-
-    /**Метод лишения прав администратора
-     */
-    @Override
-    @Transactional
-    public void removeAdminRole(User user) {
-        userDAO.removeAdminRole(user);
+    public String getRoleSetToString(Authentication authentication) {
+        return userDAO.getRoleSetToString(authentication);
     }
 
     /**Метод, который переопределен из интерфейса UserDetailsService. Осуществляет проверку,

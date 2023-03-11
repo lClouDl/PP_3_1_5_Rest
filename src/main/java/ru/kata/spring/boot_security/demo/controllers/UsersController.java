@@ -23,9 +23,11 @@ public class UsersController {
      * Получает имя(логин) от зарегестрированного пользователя и по нему ищет пользователя в бд.
      * Далее отправляет этого пользователя на представление users/show которое выводит на экран всю информацию о нем.
      */
-    @GetMapping("/account")
+    @GetMapping("")
     public String show(Model model, Authentication authentication) {
-        model.addAttribute("userById", userService.loadUserByUsername(authentication.getName()));
-        return "users/show";
+        model.addAttribute("thisUser", authentication);
+        model.addAttribute("thisUserRoles", userService.getRoleSetToString(authentication).trim());
+        model.addAttribute("userByUsername", userService.loadUserByUsername(authentication.getName()));
+        return "users/index-bootstrap";
     }
 }

@@ -1,15 +1,19 @@
 package ru.kata.spring.boot_security.demo.dao;
 
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.stereotype.Repository;
 import ru.kata.spring.boot_security.demo.models.Role;
 import ru.kata.spring.boot_security.demo.models.User;
+
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 
-/**Класс DAO слоя. Работает через EntityManager. С предыдущей задачи добавил только два метода
+/**
+ * Класс DAO слоя. Работает через EntityManager. С предыдущей задачи добавил только два метода
  * setAdminRole(User user) и removeAdminRole(User user)
  */
 @Repository
@@ -47,6 +51,8 @@ public class UserDAOImp implements UserDAO {
         entityManager.find(User.class, user.getId()).setGender(user.getGender());
         entityManager.find(User.class, user.getId()).setLogin(user.getLogin());
         entityManager.find(User.class, user.getId()).setPassword(user.getPassword());
+        entityManager.find(User.class, user.getId()).setRoleSet(user.getRoleSet());
+
     }
 
     @Override
@@ -54,18 +60,20 @@ public class UserDAOImp implements UserDAO {
         entityManager.remove(entityManager.find(User.class, id));
     }
 
-    /**Метод, который берет Роль администратора из бд и добавляет ее
-     * в поле множество roleSet.
+    /**
+     * Метод выводит в строку, через пробел, все роли данного пользователя
+     * Этот метод необходим, для удобного заполнения navbar в html
      */
     @Override
-    public void setAdminRole(User user) {
-        user.getRoleSet().add(entityManager.find(Role.class, 2));
-    }
-
-    /**Метод, который удаляет Роль администратора из множества roleSet.
-     */
-    @Override
-    public void removeAdminRole(User user) {
-        user.getRoleSet().remove(entityManager.find(Role.class,2));
+    public String getRoleSetToString(Authentication authentication) {
+        StringBuilder roleThisUser = new StringBuilder();
+        for (String str : AuthorityUtils.authorityListToSet(authentication.getAuthorities())) {
+            if (str.equals("ROLE_ADMIN")) {
+                roleThisUser.insert(0, str.substring(5) + " ");
+            } else {
+                roleThisUser.append(str.substring(5)).append(" ");
+            }
+        }
+        return roleThisUser.toString();
     }
 }
