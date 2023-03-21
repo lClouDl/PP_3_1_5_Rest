@@ -45,11 +45,11 @@
 
     <nav class="navbar navbar-expand-lg bg-dark text-white">
         <ul class="navbar-nav mr-auto">
-            <a class="font-weight-bold" th:text="${thisUser.getName()}"></a>
+            <a class="font-weight-bold" id="nameNavBar"></a>        <!--id="nameNavBar"-->
             <a>&nbsp;</a>
-            <a th:text="' with roles: ' + ${thisUserRoles}">VALUE</a>
+            <a id="roleNavBar">VALUE</a>                            <!--id="roleNavBar"-->
         </ul>
-        <a class="nav-item nav-link" id="logout" th:href="@{/logout}">Logout</a>
+        <a class="nav-item nav-link" id="logout">Logout</a>         <!--id="logout"-->
     </nav>
 
     <div class="row" style="height: 100%">
@@ -69,7 +69,7 @@
                     <ul class="nav nav-tabs mx-3" role="tablist">
                         <li class="nav-item"><a class="nav-link active" href="#users-table" role="tab"
                                                 data-toggle="tab"><b>Users table</b></a></li>
-                        <li class="nav-item"><a class="nav-link" href="#new-user" role="tab" data-toggle="tab"><b>New
+                        <li class="nav-item"><a class="nav-link" href="#new-user" id="new-user-href" role="tab" data-toggle="tab"><b>New
                             User</b></a></li>
                     </ul>
                     <div class="tab-content mx-3">
@@ -97,29 +97,25 @@
 
                                             </tr>
                                             </thead>
-                                            <tbody class="font-weight-normal">
-                                            <div th:each="user : ${users}">
-                                                <tr style="border-top: 2px solid #dee2e6; border-bottom: 2px solid #dee2e6">
-                                                    <td th:text="${user.getId()}"></td>
-                                                    <td th:text="${user.getFirstName()}"></td>
-                                                    <td th:text="${user.getLastName()}"></td>
-                                                    <td th:text="${user.getGender()}"></td>
-                                                    <td th:text="${user.getLogin()}"></td>
-                                                    <td>
-                                                        <p id="roleSet" th:each="role : ${user.getRoleSet()}"
-                                                           th:text="${role.getRole().substring(5)} "></p>
-                                                    </td>
-                                                    <td>
-                                                        <a th:href="'#modal-edit'+${user.getId()}" class="btn" role="button" data-toggle="modal"
+                                            <tbody id="tableForLinkUsers" class="font-weight-normal">
+                                            <div id="divTable">
+                                                <tr id="rowForUser" style="border-top: 2px solid #dee2e6; border-bottom: 2px solid #dee2e6">
+                                                    <td id="tdId" class="tdIdClass"></td>                       <!--id="tdId"-->
+                                                    <td id="tdFirstName" class="tdFirstNameClass"></td>                <!--id="tdFirstName"-->
+                                                    <td id="tdLastName"></td>                 <!--id="tdLastName"-->
+                                                    <td id="tdGender"></td>                   <!--id="tdGender"-->
+                                                    <td id="tdLogin"></td>                    <!--id="tdLogin"-->
+                                                    <td id="tdRoleSet"></td>                  <!--id="tdRoleSet"-->
+                                                    <td id="tdEdit">
+                                                        <a href="#modal-edit" id="buttonEdit" class="btn" role="button" data-toggle="modal"
                                                            style="background-color: #17a2b8; color: white">Edit</a>
                                                     </td>
-                                                    <td>
-                                                        <a th:href="'#modal-delete'+${user.getId()}" class="btn" role="button" data-toggle="modal"
+                                                    <td id="tdDelete">
+                                                        <a href="#modal-delete" id="buttonDelete" class="btn" role="button" data-toggle="modal"
                                                            style="background-color: #dc3545; color: white">Delete</a>
                                                     </td>
                                                 </tr>
-
-                                                <div th:id="'modal-edit'+${user.getId()}" class="modal fade">
+                                                <div id="modal-edit" class="modal fade">
                                                     <div class="modal-dialog">
                                                         <div class="modal-content">
                                                             <div class="modal-header">
@@ -130,78 +126,60 @@
                                                             </div>
                                                             <div class="modal-body">
                                                                 <div class="text-center">
-                                                                    <form th:method="PATCH" th:action="@{/admin/{id}(id=${user.getId()})}" th:object="${user}">
+                                                                    <form id = "form-edit">
                                                                         <div class="form-group">
                                                                             <label for="id-edit">ID</label>
                                                                             <br/>
-                                                                            <input type="number" id="id-edit" th:disabled="disabled" th:placeholder="${user.getId()}"/>
-                                                                            <div style="color:red" th:if="${#fields.hasErrors('id')}"
-                                                                                 th:errors="*{id}">Ошибка в ID
-                                                                            </div>
+                                                                            <input type="text" id="id-edit" class="inputIdEdit" disabled="disabled" placeholder=""/>
                                                                             <br/>
-                                                                            <label for="first-name-edit">First name</label>
+                                                                            <label for="first-name-edit">First name
+                                                                                <div id="errFirstNamePATCH" style="color:red; display:none" >Ошибка в имени</div></label>
                                                                             <br/>
-                                                                            <input type="text" th:field="*{firstName}" id="first-name-edit" th:value="${user.getFirstName()}" th:placeholder="${user.getFirstName()}"/>
-                                                                            <div style="color:red" th:if="${#fields.hasErrors('firstName')}"
-                                                                                 th:errors="*{firstName}">Ошибка в имени
-                                                                            </div>
+                                                                            <input type="text" id="first-name-edit" class="inputFirstNameEdit" placeholder=""/>
                                                                             <br/>
-                                                                            <label for="last-name-edit">Last name</label>
+                                                                            <label for="last-name-edit">Last name
+                                                                                <div id="errLastNamePATCH" style="color:red; display:none" >Ошибка в фамилии</div></label>
                                                                             <br/>
-                                                                            <input type="text" th:field="*{lastName}" id="last-name-edit" th:value="${user.getLastName()}" th:placeholder="${user.getLastName()}"/>
-                                                                            <div style="color:red" th:if="${#fields.hasErrors('lastName')}"
-                                                                                 th:errors="*{lastName}">Ошибка в фамилии
-                                                                            </div>
+                                                                            <input type="text" id="last-name-edit" class="inputLastNameEdit" placeholder=""/>
                                                                             <br/>
-                                                                            <label for="gender-edit">Sex</label>
+                                                                            <label for="gender-edit">Sex
+                                                                                <div id="errGenderPATCH" style="color:red; display:none" >Укажите пол</div></label>
                                                                             <br/>
-                                                                            <input type="text" th:field="*{gender}" id="gender-edit" th:value="${user.getGender()}" th:placeholder="${user.getGender()}"/>
-                                                                            <div style="color:red" th:if="${#fields.hasErrors('gender')}"
-                                                                                 th:errors="*{gender}">Ошибка в поле
-                                                                            </div>
+                                                                            <input type="text" id="gender-edit" class="inputGenderEdit" placeholder=""/>
                                                                             <br/>
-                                                                            <label for="login-edit">Login</label>
+                                                                            <label for="login-edit">Login
+                                                                                <div id="errLoginPATCH" style="color:red; display:none" >Ошибка в логине</div></label>
                                                                             <br/>
-                                                                            <input type="text" th:field="*{login}" id="login-edit" th:value="${user.getLogin()}" th:placeholder="${user.getLogin()}"/>
-                                                                            <div style="color:red" th:if="${#fields.hasErrors('login')}"
-                                                                                 th:errors="*{login}">Ошибка в поле
-                                                                            </div>
+                                                                            <input type="text" id="login-edit" class="inputLoginEdit" placeholder=""/>
                                                                             <br/>
-                                                                            <label for="password-edit">Password</label>
+                                                                            <label for="password-edit">Password
+                                                                                <div id="errPasswordPATCH" style="color:red; display:none" >Ошибка в пароле</div></label>
                                                                             <br/>
-                                                                            <input type="password" th:field="*{password}" id="password-edit"/>
-                                                                            <div style="color:red" th:if="${#fields.hasErrors('password')}"
-                                                                                 th:errors="*{password}">Ошибка в поле
-                                                                            </div>
+                                                                            <input type="password" id="password-edit" class="inputPasswordEdit"/>
                                                                             <br/>
-                                                                            <label for="role-edit">Role</label>
+                                                                            <label for="role-edit">Role
+                                                                                <div id="errRoleSetPATCH" style="color:red; display:none" >Выберите роль</div></label>
                                                                             <br/>
-<!--                                                                            РАЗОБРАТЬСЯ!!!-->
-                                                                            <select name="selectList" th:field="*{roleSet}" size="2" id="role-edit" style="width: 180px;" multiple>
+                                                                            <select name="selectList" size="2" id="role-edit" class="inputRoleSetEdit" style="width: 180px;" multiple>
 
-                                                                                <option th:each="role : ${addRoles}"
-                                                                                        th:value="${role.getId()}"
-                                                                                        th:text="${role.getRole().substring(5)}">
-                                                                                </option>
+                                                                                <option value="1">ADMIN</option>
+                                                                                <option value="2">USER</option>
                                                                             </select>
                                                                             <br/>
-                                                                            <div style="color:red" th:if="${#fields.hasErrors('roleSet')}"
-                                                                                 th:errors="*{roleSet}">Ошибка в ролях
-                                                                            </div>
                                                                         </div>
-                                                                        <input type="submit" th:id = "'btn-edit'+${user.getId()}" style="display: none"/>
+                                                                        <input type="submit" id = "btn-edit" style="display: none"/>
                                                                     </form>
                                                                 </div>
                                                             </div>
                                                             <div class="modal-footer">
                                                                 <button class="btn btn-secondary" data-dismiss = "modal">Close</button>
-                                                                <label th:for="'btn-edit'+${user.getId()}" class="btn btn-primary" tabindex="0">Edit</label>
+                                                                <label for="btn-edit" id = "labelBtnEdit" class="btn btn-primary" tabindex="0">Edit</label>
                                                             </div>
                                                         </div>
                                                     </div>
                                                 </div>
 
-                                                <div th:id="'modal-delete'+${user.getId()}" class="modal fade">
+                                                <div id="modal-delete" class="modal fade">
                                                     <div class="modal-dialog">
                                                         <div class="modal-content">
                                                             <div class="modal-header">
@@ -212,65 +190,43 @@
                                                             </div>
                                                             <div class="modal-body">
                                                                 <div class="text-center">
-                                                                    <form th:method="DELETE" th:action="@{/admin/{id}(id=${user.getId()})}" th:object="${user}">
+                                                                    <form id="form-delete">
                                                                         <div class="form-group">
                                                                             <label for="id-delete">ID</label>
                                                                             <br/>
-                                                                            <input type="number" id="id-delete" th:disabled="disabled" th:placeholder="${user.getId()}"/>
-                                                                            <div style="color:red" th:if="${#fields.hasErrors('id')}"
-                                                                                 th:errors="*{id}">Ошибка в ID
-                                                                            </div>
+                                                                            <input type="number" id="id-delete" disabled="disabled" placeholder=""/>
                                                                             <br/>
                                                                             <label for="first-name-delete">First name</label>
                                                                             <br/>
-                                                                            <input type="text" th:field="*{firstName}" th:disabled="disabled" id="first-name-delete" th:value="${user.getFirstName()}" th:placeholder="${user.getFirstName()}"/>
-                                                                            <div style="color:red" th:if="${#fields.hasErrors('firstName')}"
-                                                                                 th:errors="*{firstName}">Ошибка в имени
-                                                                            </div>
+                                                                            <input type="text" id="first-name-delete" disabled="disabled" placeholder=""/>
                                                                             <br/>
                                                                             <label for="last-name-delete">Last name</label>
                                                                             <br/>
-                                                                            <input type="text" th:field="*{lastName}" th:disabled="disabled" id="last-name-delete" th:value="${user.getLastName()}" th:placeholder="${user.getLastName()}"/>
-                                                                            <div style="color:red" th:if="${#fields.hasErrors('lastName')}"
-                                                                                 th:errors="*{lastName}">Ошибка в фамилии
-                                                                            </div>
+                                                                            <input type="text" id="last-name-delete" disabled="disabled"placeholder=""/>
                                                                             <br/>
                                                                             <label for="gender-delete">Sex</label>
                                                                             <br/>
-                                                                            <input type="text" th:field="*{gender}" th:disabled="disabled" id="gender-delete" th:value="${user.getGender()}" th:placeholder="${user.getGender()}"/>
-                                                                            <div style="color:red" th:if="${#fields.hasErrors('gender')}"
-                                                                                 th:errors="*{gender}">Ошибка в поле
-                                                                            </div>
+                                                                            <input type="text" id="gender-delete" disabled="disabled" placeholder=""/>
                                                                             <br/>
                                                                             <label for="login-delete">Login</label>
                                                                             <br/>
-                                                                            <input type="text" th:field="*{login}" th:disabled="disabled" id="login-delete" th:value="${user.getLogin()}" th:placeholder="${user.getLogin()}"/>
-                                                                            <div style="color:red" th:if="${#fields.hasErrors('login')}"
-                                                                                 th:errors="*{login}">Ошибка в поле
-                                                                            </div>
+                                                                            <input type="text" id="login-delete" disabled="disabled" placeholder=""/>
                                                                             <br/>
                                                                             <label for="role-delete">Role</label>
                                                                             <br/>
-                                                                            <!--                                                                            РАЗОБРАТЬСЯ!!!-->
-                                                                            <select name="selectList" th:field="*{roleSet}" size="2" th:disabled="disabled" id="role-delete" style="width: 180px;" multiple>
-
-                                                                                <option selected th:each="role : ${addRoles}"
-                                                                                        th:value="${role.getId()}"
-                                                                                        th:text="${role.getRole().substring(5)}">
-                                                                                </option>
+                                                                            <select name="selectList" size="2" disabled="disabled" id="role-delete" style="width: 180px;" multiple>
+                                                                                    <option value="1">ADMIN</option>
+                                                                                    <option value="2">USER</option>
                                                                             </select>
                                                                             <br/>
-                                                                            <div style="color:red" th:if="${#fields.hasErrors('roleSet')}"
-                                                                                 th:errors="*{roleSet}">Ошибка в ролях
-                                                                            </div>
                                                                         </div>
-                                                                        <input type="submit" th:id = "'btn-delete'+${user.getId()}" style="display: none"/>
+                                                                        <input type="submit" id = "btn-delete" style="display: none"/>
                                                                     </form>
                                                                 </div>
                                                             </div>
                                                             <div class="modal-footer">
                                                                 <button class="btn btn-secondary" data-dismiss = "modal">Close</button>
-                                                                <label th:for="'btn-delete'+${user.getId()}" class="btn" style="background-color: #dc3545; color: white" tabindex="0">Delete</label>
+                                                                <label id="labelBtnDelete" for="btn-delete" class="btn" style="background-color: #dc3545; color: white" tabindex="0">Delete</label>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -294,54 +250,44 @@
                                 <tbody style="background: white">
                                 <tr>
                                     <th class="text-center">
-                                        <form th:method="POST" th:action="@{/admin}" th:object="${user}">
+                                        <form id="form-new" class="formNew">
                                             <div class="container">
-                                                <label for="firstname">First name</label>
+                                                <label for="first-name-new">First name
+                                                    <div id="errFirstNamePOST" style="color:red; display:none" >Ошибка в имени</div>
+                                                </label>
                                                 </br>
-                                                <input type="text" th:field="*{firstName}" id="firstname"/>
-                                                <div style="color:red" th:if="${#fields.hasErrors('firstName')}"
-                                                     th:errors="*{firstName}">Ошибка в имени
-                                                </div>
+                                                <input type="text" id="first-name-new" class="inputFirstNameEdit"/>
                                                 <br/>
-                                                <label for="lastname">Last name</label>
+                                                <label for="last-name-new">Last name
+                                                    <div id="errLastNamePOST" style="color:red; display:none" >Ошибка в фамилии</div></label>
                                                 </br>
-                                                <input type="text" th:field="*{lastName}" id="lastname"/>
-                                                <div style="color:red" th:if="${#fields.hasErrors('lastName')}"
-                                                     th:errors="*{lastName}">Ошибка в фамилии
-                                                </div>
+                                                <input type="text" id="last-name-new" class="inputLastNameEdit"/>
                                                 <br/>
-                                                <label for="gender">Sex</label>
+                                                <label for="gender-new">Sex
+                                                    <div id="errGenderPOST" style="color:red; display:none" >Укажите пол</div></label>
                                                 </br>
-                                                <input type="text" th:field="*{gender}" id="gender"/>
-                                                <div style="color:red" th:if="${#fields.hasErrors('gender')}"
-                                                     th:errors="*{gender}">Ошибка в поле
-                                                </div>
+                                                <input type="text" id="gender-new" class="inputGenderEdit"/>
                                                 <br/>
-                                                <label for="login">Login</label>
-                                                </br>
-                                                <input type="text" th:field="*{login}" id="login"/>
-                                                <div style="color:red" th:if="${#fields.hasErrors('login')}"
-                                                     th:errors="*{login}">Ошибка в поле
-                                                </div>
-                                                <br/>
-                                                <label for="password">Password</label>
-                                                </br>
-                                                <input type="password" th:field="*{password}" id="password"/>
-                                                <div style="color:red" th:if="${#fields.hasErrors('password')}"
-                                                     th:errors="*{password}">Ошибка в поле
-                                                </div>
-                                                <br/>
-                                                <label for="role-edit">Role</label>
-                                                </br>
-                                                <select name="selectList" th:field="*{roleSet}" size="2" style="width: 180px;" multiple>
+                                                <label for="login-new">Login
+                                                    <div id="errLoginPOST" style="color:red; display:none" >Ошибка в логине</div></label>
 
-                                                    <option th:each="role : ${addRoles}"
-                                                            th:value="${role.getId()}"
-                                                            th:text="${role.getRole().substring(5)}">
-                                                    </option>
+                                                </br>
+                                                <input type="text" id="login-new" class="inputLoginEdit"/>
+                                                <br/>
+                                                <label for="password-new">Password
+                                                    <div id="errPasswordPOST" style="color:red; display:none" >Ошибка в пароле</div></label>
+                                                </br>
+                                                <input type="password" id="password-new" class="inputPasswordEdit"/>
+                                                <br/>
+                                                <label for="role-new">Role
+                                                    <div id="errRoleSetPOST" style="color:red; display:none" >Выберите роль</div></label>
+                                                </br>
+                                                <select name="selectList" id="role-new" class="inputRoleSetEdit" size="2" style="width: 180px;" multiple>
+                                                    <option value="1">ADMIN</option>
+                                                    <option value="2">USER</option>
                                                 </select>
                                                 </br>
-                                                <input type="submit" class="btn btn-success font-weight-bold" style="margin-top: 10px" value="Add new user"/>
+                                                <input type="button" id="btnNew" class="btn btn-success font-weight-bold" style="margin-top: 10px" value="Add new user"/>
                                             </div>
                                         </form>
                                     </th>
@@ -378,16 +324,12 @@
                                         </thead>
                                         <tbody class="font-weight-normal">
                                         <tr style="border-top: 2px solid #dee2e6; border-bottom: 2px solid #dee2e6">
-                                            <td th:text="${userByUsername.getId()}"></td>
-                                            <td th:text="${userByUsername.getFirstName()}"></td>
-                                            <td th:text="${userByUsername.getLastName()}"></td>
-                                            <td th:text="${userByUsername.getGender()}"></td>
-                                            <td th:text="${userByUsername.getLogin()}"></td>
-                                            <td>
-                                                <p class="d-inline block"
-                                                   th:each="role : ${userByUsername.getRoleSet()}"
-                                                   th:text="${role.getRole().substring(5)} "></p>
-                                            </td>
+                                            <td id="tdIdThisUser"></td>                                                  <!--id="tdIdThisUser"-->
+                                            <td id="tdFirstNameThisUser"></td>                                           <!--id="tdFirstNameThisUser"-->
+                                            <td id="tdLastNameThisUser"></td>                                            <!--id="tdLastNameThisUser"-->
+                                            <td id="tdGenderThisUser"></td>                                              <!--id="tdGenderThisUser"-->
+                                            <td id="tdLoginThisUser"></td>                                               <!--id="tdLoginThisUser"-->
+                                            <td id="tdRoleSetThisUser"></td>                                             <!--id="tdRoleSetThisUser"-->
                                         </tr>
                                         </tbody>
                                     </table>
@@ -411,5 +353,6 @@
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
         integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
         crossorigin="anonymous"></script>
+<script type="module" src="/scriptForAdmin.js"></script>
 </body>
 </html>

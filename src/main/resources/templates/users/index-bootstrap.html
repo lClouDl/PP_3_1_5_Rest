@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
-      xmlns:width="http://www.w3.org/1999/xhtml" lang="en">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
     <meta charset="UTF-8">
 
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="icon" href="data:;base64,iVBORw0KGgo="/>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
           integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <style>
@@ -34,19 +34,18 @@
             outline-color: #bfdeff;
         }
     </style>
-
-    <title>Все люди</title>
+    <title>Личные данные</title>
 </head>
 <body>
 <div class="container-fluid" style="height: 100%">
 
     <nav class="navbar navbar-expand-lg bg-dark text-white">
         <ul class="navbar-nav mr-auto">
-            <a class="font-weight-bold" th:text="${thisUser.getName()}"></a>
+            <a class="font-weight-bold" id="nameNavBar"></a>        <!--id="nameNavBar"-->
             <a>&nbsp;</a>
-            <a th:text="' with roles: ' + ${thisUserRoles}">VALUE</a>
+            <a id="roleNavBar">VALUE</a>                            <!--id="roleNavBar"-->
         </ul>
-        <a class="nav-item nav-link" id="logout" th:href="@{/logout}">Logout</a>
+        <a class="nav-item nav-link" id="logout">Logout</a>         <!--id="logout"-->
     </nav>
 
     <div class="row" style="height: 100%">
@@ -84,16 +83,12 @@
                                         </thead>
                                         <tbody class="font-weight-normal">
                                         <tr style="border-top: 2px solid #dee2e6; border-bottom: 2px solid #dee2e6">
-                                            <td th:text="${userByUsername.getId()}"></td>
-                                            <td th:text="${userByUsername.getFirstName()}"></td>
-                                            <td th:text="${userByUsername.getLastName()}"></td>
-                                            <td th:text="${userByUsername.getGender()}"></td>
-                                            <td th:text="${userByUsername.getLogin()}"></td>
-                                            <td>
-                                                <p class="d-inline block"
-                                                   th:each="role : ${userByUsername.getRoleSet()}"
-                                                   th:text="${role.getRole().substring(5)} "></p>
-                                            </td>
+                                            <td id="tdIdThisUser"></td>                                                  <!--id="tdIdThisUser"-->
+                                            <td id="tdFirstNameThisUser"></td>                                           <!--id="tdFirstNameThisUser"-->
+                                            <td id="tdLastNameThisUser"></td>                                            <!--id="tdLastNameThisUser"-->
+                                            <td id="tdGenderThisUser"></td>                                              <!--id="tdGenderThisUser"-->
+                                            <td id="tdLoginThisUser"></td>                                               <!--id="tdLoginThisUser"-->
+                                            <td id="tdRoleSetThisUser"></td>                                             <!--id="tdRoleSetThisUser"-->
                                         </tr>
                                         </tbody>
                                     </table>
@@ -117,5 +112,6 @@
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
         integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
         crossorigin="anonymous"></script>
+<script type="module" src="/scriptForUser.js"></script>
 </body>
 </html>

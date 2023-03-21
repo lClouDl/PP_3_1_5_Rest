@@ -6,9 +6,9 @@ import org.springframework.validation.Validator;
 import ru.kata.spring.boot_security.demo.models.User;
 import ru.kata.spring.boot_security.demo.servises.UserValidateService;
 
-//Класс-валидатор. Реализует интерфейс Validator. Имеет зависимость на UserValidateService.
-//Следит за тем, чтобы в бд не попало два одиноковых логина.
-
+    /** Класс-валидатор. Реализует интерфейс Validator. Имеет зависимость от UserValidateService.
+    * Следит за тем, чтобы в бд не попало два одиноковых логина.
+    */
 @Component
 public class UserValidator implements Validator {
 
@@ -23,8 +23,9 @@ public class UserValidator implements Validator {
         return User.class.equals(clazz);
     }
 
-//Метод выполняет в случае, когда loadUserByUsername() вернет что-либо кроме null,
-//выдаст ошибку с пояснением, что пользователь с таким логином уже существует в бд.
+    /**Метод выполняет в случае, когда loadUserByUsername() вернет что-либо кроме null,
+     * выдаст ошибку с пояснением, что пользователь с таким логином уже существует в бд.
+     */
     @Override
     public void validate(Object target, Errors errors) {
         User user = (User) target;

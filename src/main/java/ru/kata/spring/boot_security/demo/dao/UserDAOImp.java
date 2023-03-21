@@ -2,9 +2,11 @@ package ru.kata.spring.boot_security.demo.dao;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.AuthorityUtils;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 import ru.kata.spring.boot_security.demo.models.Role;
 import ru.kata.spring.boot_security.demo.models.User;
+import ru.kata.spring.boot_security.demo.util.UserNotFoundException;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -16,7 +18,7 @@ import java.util.Optional;
  * Класс DAO слоя. Работает через EntityManager. С предыдущей задачи добавил только два метода
  * setAdminRole(User user) и removeAdminRole(User user)
  */
-@Repository
+@Component
 public class UserDAOImp implements UserDAO {
 
     @PersistenceContext
@@ -26,8 +28,11 @@ public class UserDAOImp implements UserDAO {
         return entityManager.createQuery("select u from User u", User.class).getResultList();
     }
 
+//    public User getUserById(int id) {
+//        return entityManager.find(User.class, id);
+//    }
     public User getUserById(int id) {
-        return entityManager.find(User.class, id);
+        return Optional.ofNullable(entityManager.find(User.class, id)).orElseThrow(UserNotFoundException::new);
     }
 
     @Override
@@ -38,8 +43,10 @@ public class UserDAOImp implements UserDAO {
 
     @Override
     public void addUser(User user) {
-        user.setRoleSet(new HashSet<>());
-        user.getRoleSet().add(entityManager.find(Role.class, 1));
+        if (user.getRoleSet() == null) {
+            user.setRoleSet(new HashSet<>());
+            user.getRoleSet().add(entityManager.find(Role.class, 1));
+        }
 
         entityManager.persist(user);
     }
@@ -57,7 +64,8 @@ public class UserDAOImp implements UserDAO {
 
     @Override
     public void delete(int id) {
-        entityManager.remove(entityManager.find(User.class, id));
+        User user = Optional.ofNullable(entityManager.find(User.class, id)).orElseThrow(UserNotFoundException::new);
+        entityManager.remove(user);
     }
 
     /**

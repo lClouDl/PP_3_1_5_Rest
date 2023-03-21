@@ -1,10 +1,12 @@
 package ru.kata.spring.boot_security.demo.configs;
 
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import ru.kata.spring.boot_security.demo.security.AuthProviderImp;
 
 /**Конфигурационный класс, который настраивает секьюрность. Имеет две зависимости:
@@ -32,10 +34,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
      */
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http
+        http.csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/users", "/users/index-bootstrap").hasAnyRole("USER")
-                .antMatchers("/", "/auth/registration", "/error").permitAll()
+                .antMatchers("/users", "/users/index-bootstrap", "/scriptForUser.js").hasAnyRole("USER")
+                .antMatchers("/", "/auth/registration", "/error", "/api/**").permitAll()
                 .anyRequest().hasRole("ADMIN")
                 .and()
                 .formLogin().successHandler(successUserHandler)

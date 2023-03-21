@@ -1,5 +1,6 @@
 package ru.kata.spring.boot_security.demo.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.security.core.GrantedAuthority;
 import javax.persistence.*;
 import java.util.Set;
@@ -21,6 +22,7 @@ public class Role implements GrantedAuthority {
      * Для корректной работы отказался от ленивой загрузки
      */
     @ManyToMany(mappedBy = "roleSet")
+    @JsonIgnore
     private Set<User> userSet;
 
     public Role(){}
@@ -59,6 +61,7 @@ public class Role implements GrantedAuthority {
 
     /**Метод который возвращает роль.
      */
+    @JsonIgnore
     @Override
     public String getAuthority() {
         return getRole();

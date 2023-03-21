@@ -1,5 +1,6 @@
 package ru.kata.spring.boot_security.demo.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.Cascade;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -34,6 +35,8 @@ public class User implements UserDetails {
 
     @NotNull(message = "Укажите пол человка")
     @NotEmpty(message = "Укажите пол человка")
+    @Size(min = 1, message = "Укажите пол человка")
+    @Column(name = "gender")
     private String gender;
 
     /**Это поле содершит множество ролей для одного пользователя
@@ -114,6 +117,7 @@ public class User implements UserDetails {
 
     /**Метод переопределн из интерфейса UserDetails, необходим для авторизации. Возвращает список ролей.
      */
+    @JsonIgnore
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return getRoleSet();
@@ -137,26 +141,31 @@ public class User implements UserDetails {
 
     /**Далее идут методы из интерфейса UserDetails необходимые для дополнительной настройки сущности
      */
+    @JsonIgnore
     @Override
     public String getUsername() {
         return getLogin();
     }
 
+    @JsonIgnore
     @Override
     public boolean isAccountNonExpired() {
         return true;
     }
 
+    @JsonIgnore
     @Override
     public boolean isAccountNonLocked() {
         return true;
     }
 
+    @JsonIgnore
     @Override
     public boolean isCredentialsNonExpired() {
         return true;
     }
 
+    @JsonIgnore
     @Override
     public boolean isEnabled() {
         return true;
