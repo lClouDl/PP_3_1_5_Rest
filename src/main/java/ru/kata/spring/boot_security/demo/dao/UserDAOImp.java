@@ -2,12 +2,10 @@ package ru.kata.spring.boot_security.demo.dao;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.AuthorityUtils;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 import ru.kata.spring.boot_security.demo.models.Role;
 import ru.kata.spring.boot_security.demo.models.User;
 import ru.kata.spring.boot_security.demo.util.UserNotFoundException;
-
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.util.HashSet;
@@ -18,7 +16,7 @@ import java.util.Optional;
  * Класс DAO слоя. Работает через EntityManager. С предыдущей задачи добавил только два метода
  * setAdminRole(User user) и removeAdminRole(User user)
  */
-@Component
+@Repository
 public class UserDAOImp implements UserDAO {
 
     @PersistenceContext
@@ -28,9 +26,6 @@ public class UserDAOImp implements UserDAO {
         return entityManager.createQuery("select u from User u", User.class).getResultList();
     }
 
-//    public User getUserById(int id) {
-//        return entityManager.find(User.class, id);
-//    }
     public User getUserById(int id) {
         return Optional.ofNullable(entityManager.find(User.class, id)).orElseThrow(UserNotFoundException::new);
     }
@@ -53,13 +48,15 @@ public class UserDAOImp implements UserDAO {
 
     @Override
     public void update(User user) {
-        entityManager.find(User.class, user.getId()).setFirstName(user.getFirstName());
-        entityManager.find(User.class, user.getId()).setLastName(user.getLastName());
-        entityManager.find(User.class, user.getId()).setGender(user.getGender());
-        entityManager.find(User.class, user.getId()).setLogin(user.getLogin());
-        entityManager.find(User.class, user.getId()).setPassword(user.getPassword());
-        entityManager.find(User.class, user.getId()).setRoleSet(user.getRoleSet());
-
+        User updateUser = entityManager.find(User.class, user.getId());
+        updateUser.setFirstName(user.getFirstName());
+        updateUser.setLastName(user.getLastName());
+        updateUser.setGender(user.getGender());
+        updateUser.setLogin(user.getLogin());
+        if (!updateUser.getPassword().equals(user.getPassword())) {
+            updateUser.setPassword(user.getPassword());
+        }
+        updateUser.setRoleSet(user.getRoleSet());
     }
 
     @Override

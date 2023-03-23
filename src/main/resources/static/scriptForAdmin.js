@@ -88,7 +88,6 @@ const checkingFields = (method, arrError, id) => {
             switch (arrError[key]) {
                 case "firstName":
                     document.getElementById("errFirstName" + method).setAttribute("style", "color:red");
-                    console.log("Пришел в errFirstName" + method);
                     break;
                 case "lastName":
                     document.getElementById("errLastName" + method).setAttribute("style", "color:red");
@@ -195,6 +194,7 @@ let createModalEdit = async (user, modifyUrl, row) => {
 
     /*Настройка события кнопки Edit*/
     btnEdit.addEventListener("click", () => {
+        console.log(state);
         /*Очищаем все ошибки, если они были*/
         let arrDiv = modalEdit.getElementsByTagName("div");
                 arrDiv["errFirstNamePATCH"].setAttribute("style", "color:red; display:none");
@@ -205,8 +205,7 @@ let createModalEdit = async (user, modifyUrl, row) => {
                 arrDiv["errRoleSetPATCH"].setAttribute("style", "color:red; display:none");
 
         state.id = user.id;
-        let result = modifyUser("PATCH", modifyUrl, state);
-        //------------------------------------------------------------------------------------------------------
+        modifyUser("PATCH", modifyUrl, state);
         let checkState = true;
         for (let key in state) {
             if (state[key] === undefined) {
@@ -220,8 +219,13 @@ let createModalEdit = async (user, modifyUrl, row) => {
                 row.getElementsByTagName("td")[i].innerHTML = arrState[i];
             }
         }
-        checkState = true;
         state = clearState(state);
+        let arrInput = modalEdit.getElementsByTagName("input");
+        for(let key in arrInput) {
+            if (key !== 0 && key < 7) {
+                arrInput[key].value = "";
+            }
+        }
     });
     /*Добавление клона кнопки Edit в клон модального окна Edit*/
     modalEdit.appendChild(btnEdit);
@@ -283,6 +287,7 @@ let setEvents = (element) => {
         state.roleSet = roles.join(" ");
     });
     element.querySelector(".inputPasswordEdit").addEventListener("change", e => state.password = e.target.value);
+
 }
 
 /*Настройка формы New*/
@@ -309,6 +314,12 @@ let formNew = async () => {
         }
         await modifyUser("POST", addUrl, newState);
         state = clearState(state);
+        let arrInput = formNew.getElementsByTagName("input");
+        for(let key in arrInput) {
+            if (key < 5) {
+                arrInput[key].value = "";
+            }
+        }
 
 
         /*Из обновленного списка пользователей получаем двух последних user*/

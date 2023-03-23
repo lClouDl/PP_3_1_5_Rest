@@ -108,6 +108,7 @@ public class FirstRestController {
 
     private User convertToUser(UserDTO userDTO) {
         User user = modelMapper.map(userDTO, User.class);
+
         user.setRoleSet(new HashSet<>());
         for (String role : userDTO.getRoleSet().toUpperCase().split(" ")) {
             user.getRoleSet()

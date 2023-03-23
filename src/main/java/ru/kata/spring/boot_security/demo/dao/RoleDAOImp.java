@@ -1,14 +1,11 @@
 package ru.kata.spring.boot_security.demo.dao;
-
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 import ru.kata.spring.boot_security.demo.models.Role;
-
 import javax.persistence.EntityManager;
 import java.util.HashSet;
 import java.util.List;
 
-@Component
+@Repository
 public class RoleDAOImp implements RoleDAO {
     private final EntityManager entityManager;
 

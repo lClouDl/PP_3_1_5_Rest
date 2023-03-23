@@ -10,9 +10,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class StartController {
 
-    public StartController() {
-    }
-
     /**Метод запускается с пустого адреса. Запускает представление
      * index (стартовую страницу) для незарегестрированных пользователей.
      */
